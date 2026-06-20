@@ -1,44 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Magazine Desk
 
-## Getting Started
+Magazine Desk is a one-page Next.js reader for the latest public feed items from The Daily Beast, Defector, The Verge, The Ringer, 404 Media, The Bulwark, The 19th, and Puck.
 
-First, run the development server:
+## Development
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 ## Scheduling
 
-The app exposes `GET /api/cron/refresh-feeds`, protected by `Authorization: Bearer $CRON_SECRET`. The handler refreshes only when the current `America/New_York` hour is 6, 12, or 17, so it can be called hourly by Vercel Pro Cron or by an external scheduler.
+The production site exposes `GET /api/cron/refresh-feeds`, protected by `Authorization: Bearer $CRON_SECRET`. The handler refreshes only when the current `America/New_York` hour is 6, 12, or 17.
 
-Vercel Hobby projects cannot run more than one cron invocation per day, so `vercel.json` intentionally does not declare the hourly cron on Hobby. To enable Vercel-managed scheduling after upgrading to Pro, add:
+Scheduling is handled by `.github/workflows/refresh-feeds.yml`, which calls the endpoint hourly and lets the route enforce the three refresh windows. `CRON_SECRET` must be set in both Vercel and GitHub Actions secrets.
+
+Vercel Hobby projects cannot run more than one cron invocation per day, so `vercel.json` intentionally does not declare the hourly cron on Hobby. To use Vercel-managed scheduling after upgrading to Pro, replace the GitHub Actions schedule with:
 
 ```json
 {
@@ -49,4 +29,13 @@ Vercel Hobby projects cannot run more than one cron invocation per day, so `verc
     }
   ]
 }
+```
+
+## Verification
+
+Run the automated checks:
+
+```bash
+npm test
+npm run build
 ```
