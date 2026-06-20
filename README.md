@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scheduling
+
+The app exposes `GET /api/cron/refresh-feeds`, protected by `Authorization: Bearer $CRON_SECRET`. The handler refreshes only when the current `America/New_York` hour is 6, 12, or 17, so it can be called hourly by Vercel Pro Cron or by an external scheduler.
+
+Vercel Hobby projects cannot run more than one cron invocation per day, so `vercel.json` intentionally does not declare the hourly cron on Hobby. To enable Vercel-managed scheduling after upgrading to Pro, add:
+
+```json
+{
+  "crons": [
+    {
+      "path": "/api/cron/refresh-feeds",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
+```
