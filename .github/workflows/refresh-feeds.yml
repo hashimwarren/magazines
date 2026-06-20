@@ -1,0 +1,16 @@
+name: Refresh magazine feeds
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh scheduled feed cache
+        run: |
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://magazines.goofy.computer/api/cron/refresh-feeds
